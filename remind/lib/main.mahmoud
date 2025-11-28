@@ -1,0 +1,320 @@
+import 'package:flutter/material.dart';
+import 'counter_controller.dart';
+import 'app_router.dart';
+import 'screens_and_widgets.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Flutter Dashboard',
+      // Using the Router for navigation maps
+      routes: AppRouter.routes,
+      // Home is set explicitly or via routes (usually one or the other)
+      home: const HomeDashboard(),
+    );
+  }
+}
+
+class HomeDashboard extends StatelessWidget {
+  const HomeDashboard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: kBackgroundColor,
+      // --- Custom Bottom Navigation Bar ---
+      bottomNavigationBar: Container(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(blurRadius: 8, spreadRadius: 1, color: Colors.black12),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            BottomNavItem(
+              icon: Icons.home,
+              label: "Home",
+              active: true,
+              onTap: () {},
+            ),
+            BottomNavItem(
+              icon: Icons.dashboard,
+              label: "Dashboard",
+              active: false,
+              onTap: () {
+                Navigator.pushNamed(context, AppRouter.stats);
+              },
+            ),
+            BottomNavItem(
+              icon: Icons.person,
+              label: "Profile",
+              active: false,
+              onTap: () {
+                Navigator.pushNamed(context, AppRouter.profile);
+              },
+            ),
+          ],
+        ),
+      ),
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.all(16.0),
+          children: [
+            // --- Header Text ---
+            const Text(
+              "Home Dashboard",
+              style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+            ),
+
+            const SizedBox(height: 10),
+
+            // --- Search Bar ---
+            GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, AppRouter.search);
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 4,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: const IgnorePointer(
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: "Search tasks or contacts...",
+                      border: InputBorder.none,
+                      icon: Icon(Icons.search, color: kTextSecondary),
+                      suffixIcon: Icon(Icons.mic, color: kTextSecondary),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            // --- Stats Row ---
+            Row(
+              children: [
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, AppRouter.reminders);
+                    },
+                    child: ListenableBuilder(
+                      listenable: counterController,
+                      builder: (context, child) {
+                        return StatCard(
+                          value: counterController.remindersToday.toString(),
+                          label: "Reminders Today",
+                          color1: kAccentBlue,
+                          color2: kPrimaryBlue,
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, AppRouter.stats);
+                    },
+                    child: ListenableBuilder(
+                      listenable: counterController,
+                      builder: (context, child) {
+                        return StatCard(
+                          value: counterController.completedThisWeek.toString(),
+                          label: "Completed This Week",
+                          color1: kAccentPurple,
+                          color2: const Color(0xff6b3df5),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 25),
+
+            // --- Upcoming Reminders Section ---
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  "Upcoming Reminders",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, AppRouter.reminders);
+                  },
+                  child: const Text(
+                    "View All",
+                    style: TextStyle(color: kPrimaryBlue),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+
+            GestureDetector(
+              onTap: () {
+                _showReminderDetails(
+                  context,
+                  "Buy groceries",
+                  "When leaving work",
+                  "Milk, Eggs, Bread, Fruits",
+                );
+              },
+              child: const ReminderTile(
+                icon: Icons.shopping_cart,
+                title: "Buy groceries",
+                subtitle: "When leaving work",
+                iconColor: Color(0xFFE57373),
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                _showReminderDetails(
+                  context,
+                  "Call Mom",
+                  "6:00 PM Today",
+                  "Discuss weekend plans",
+                );
+              },
+              child: const ReminderTile(
+                icon: Icons.call,
+                title: "Call Mom",
+                subtitle: "6:00 PM Today",
+                iconColor: Color(0xFF64B5F6),
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                _showReminderDetails(
+                  context,
+                  "Water plants",
+                  "When connecting to home WiFi",
+                  "Living room and balcony plants",
+                );
+              },
+              child: const ReminderTile(
+                icon: Icons.water_drop,
+                title: "Water plants",
+                subtitle: "When connecting to home WiFi",
+                iconColor: Color(0xFF81C784),
+              ),
+            ),
+
+            const SizedBox(height: 25),
+
+            // --- Stays Section ---
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  "Upcoming Stays",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, AppRouter.stays);
+                  },
+                  child: const Text(
+                    "View All",
+                    style: TextStyle(color: kPrimaryBlue),
+                  ),
+                ),
+              ],
+            ),
+            GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, AppRouter.stays);
+              },
+              child: const StayTile(),
+            ),
+
+            const SizedBox(height: 80),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: kPrimaryBlue,
+        onPressed: () {
+          // Access controller to add reminder
+          counterController.addReminder();
+          Navigator.pushNamed(context, AppRouter.add);
+        },
+        child: const Icon(Icons.add, size: 28),
+      ),
+    );
+  }
+
+  void _showReminderDetails(
+    BuildContext context,
+    String title,
+    String time,
+    String details,
+  ) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text("Time: $time"),
+              const SizedBox(height: 10),
+              Text("Details: $details"),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text("Close"),
+            ),
+            TextButton(
+              onPressed: () {
+                // Access controller to complete reminder
+                counterController.completeReminder();
+                Navigator.of(context).pop();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text("Marked '$title' as completed"),
+                    backgroundColor: Colors.green,
+                  ),
+                );
+              },
+              child: const Text("Mark Complete"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
