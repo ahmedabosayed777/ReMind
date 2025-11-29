@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'Dashboard.dart'; // Imports the screens
+import '../pages/Dashboard.dart'; // Imports the screens
 
 class AppRouter {
   // Route Name Constants

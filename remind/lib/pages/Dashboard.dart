@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'counter_controller.dart';
+import '../models/counter_controller.dart';
 
 // --- WIDGETS ---
 const Color kPrimaryBlue = Color(0xff4c6ef5);

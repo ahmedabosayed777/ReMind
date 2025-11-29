@@ -1,56 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'models/reminder_item.dart';
-import 'pages/reminder_page.dart';
+import 'package:remind/pages/Dashboard.dart';
+import 'package:remind/pages/login.dart';
+import 'package:remind/pages/onboarding_screen.dart';
+import 'package:remind/pages/signup.dart';
 
 void main() {
-  runApp(const ThemeSwitcher());
-}
-
-class ThemeSwitcher extends StatefulWidget {
-  const ThemeSwitcher({super.key});
-
-  @override
-  State<ThemeSwitcher> createState() => _ThemeSwitcherState();
-}
-
-class _ThemeSwitcherState extends State<ThemeSwitcher> {
-  bool isDarkMode = false;
-
-  void toggleTheme() {
-    setState(() {
-      isDarkMode = !isDarkMode;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return MyApp(isDarkMode: isDarkMode, toggleTheme: toggleTheme);
-  }
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key, required this.isDarkMode, required this.toggleTheme});
-
-  final bool isDarkMode;
-  final VoidCallback toggleTheme;
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
+      title: 'ReMind',
       theme: ThemeData(
-        brightness: Brightness.light,
-        scaffoldBackgroundColor: const Color(0xfff3f4f7),
+        primarySwatch: Colors.blue,
         useMaterial3: true,
       ),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        scaffoldBackgroundColor: const Color(0xff121212),
-        useMaterial3: true,
-      ),
-      home: ReminderPage(isDarkMode: isDarkMode, toggleTheme: toggleTheme),
+      home: const OnboardingScreen(),
+      debugShowCheckedModeBanner: false,
+      routes: {
+        '/login': (context) => const LoginScreen(),
+        '/signup': (context) => const SignupScreen(),
+        '/search': (context) => const SearchPage(),
+        '/reminder': (context) => const RemindersPage(),
+        '/style': (context) => const StaysPage(),
+        '/profile': (context) => const ProfilePage(),
+        '/addItem': (context) => const AddItemPage(),
+        '/stats': (context) => const StatsPage(),
+      },
     );
   }
 }
