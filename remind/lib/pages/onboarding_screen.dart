@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-<<<<<<< Updated upstream
 import 'register_screen.dart';
-//import 'stats_page.dart'; // أو الملف اللي فيه StatsPage
-=======
-import 'package:remind/pages/login.dart';
->>>>>>> Stashed changes
+
 
 
 class OnboardingScreen extends StatefulWidget {
@@ -90,7 +86,6 @@ class _OnboardingScreenState extends State<OnboardingScreen>
             end: Alignment.bottomRight,
           ),
         ),
-
         child: SafeArea(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -152,7 +147,6 @@ class _OnboardingScreenState extends State<OnboardingScreen>
               // ===== Button =====
               Padding(
                 padding: const EdgeInsets.all(20.0),
-<<<<<<< Updated upstream
                 child: FadeTransition(
                   opacity: _fadeButton,
                   child: SizedBox(
@@ -178,31 +172,6 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
-=======
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 55,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const LoginScreen()),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                    ),
-                    child: const Text(
-                      'Get Started',
-
-                      style: TextStyle(
-                        color: Color(0xFF5A4FFF),
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
->>>>>>> Stashed changes
                       ),
                     ),
                   ),
@@ -250,4 +219,3 @@ class FeatureCard extends StatelessWidget {
     );
   }
 }
-
